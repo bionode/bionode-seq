@@ -100,5 +100,5 @@ Check [ChooseALicense.com](http://choosealicense.com/licenses/mit) for details.
 [coveralls-image]: http://img.shields.io/coveralls/bionode/bionode-seq.svg?style=flat
 [depstat-url]: http://david-dm.org/bionode/bionode-seq
 [depstat-image]: http://img.shields.io/david/bionode/bionode-seq.svg?style=flat
-[gitter-image]: http://img.shields.io/badge/gitter-bionode/bionode-seq-brightgreen.svg?style=flat
+[gitter-image]: http://img.shields.io/badge/gitter-bionode/bionode--seq-brightgreen.svg?style=flat
 [gitter-url]: https://gitter.im/bionode/bionode-seq
