@@ -1,11 +1,11 @@
 {
-  "name": "bionode",
-  "description": "A Node.js JavaScript library for client and server side bioinformatics",
-  "version": "0.4.1",
+  "name": "bionode-seq",
+  "description": "Module for DNA, RNA and protein sequences manipulation",
+  "version": "0.1.0",
   "homepage": "http://bionode.io",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bionode/bionode.git"
+    "url": "git://github.com/bionode/bionode-seq.git"
   },
   "author": {
     "name": "Bruno Vieira",
@@ -14,18 +14,15 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "~1.17.0",
-    "mocha-lcov-reporter": "0.0.1",
-    "should": "~3.0.1",
-    "istanbul": "~0.2.4",
+    "browserify": "^5.11.0",
+    "contributor": "^0.1.16",
     "coveralls": "~2.6.1",
-    "gulp": "~3.4.0",
-    "gulp-util": "~2.2.12",
-    "gulp-livereload": "~0.2.0",
-    "tiny-lr": "0.0.5",
-    "webpack": "~1.0.0-beta8",
     "docco": "~0.6.2",
-    "contributor": "^0.1.16"
+    "istanbul": "~0.2.4",
+    "tap-spec": "^0.2.1",
+    "tape": "^2.14.0",
+    "testling": "^1.7.0",
+    "uglify-js": "^2.4.15"
   },
   "keywords": [
     "bioinformatics",
@@ -39,11 +36,28 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec",
-    "coverage": "istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && rm -rf ./coverage",
-    "coveralls": "istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
-    "build-browser": "webpack",
-    "build-docs": "docco ./lib/bionode.js"
+    "test": "node test/bionode-seq.js | tap-spec",
+    "test-browser": "browserify test/bionode-seq.js | testling | tap-spec",
+    "coverage": "istanbul cover test/bionode-seq.js --report lcovonly -- | tap-spec && rm -rf ./coverage",
+    "coveralls": "istanbul cover test/bionode-seq.js --report lcovonly -- | tap-spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
+    "build-browser": "browserify index.js -r ./index.js:bionode-seq | uglifyjs > bionode-seq.min.js",
+    "build-docs": "docco ./lib/bionode-seq.js"
+  },
+  "testling": {
+    "files": "test/bionode-seq.js",
+    "browsers": [
+      "ie/8..latest",
+      "firefox/17..latest",
+      "firefox/nightly",
+      "chrome/22..latest",
+      "chrome/canary",
+      "opera/12..latest",
+      "opera/next",
+      "safari/5.1..latest",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "android-browser/4.2..latest"
+    ]
   },
   "contributors": [
     {
