@@ -4,10 +4,10 @@ var data = require('./data')
 
 test("check sequence type", function(t) {
   t.plan(5)
-  t.equal(seq.checkType(data.dnaSequence), 'dna', "should return strings 'dna' for sequence following IUPAC guidelines.")
-  t.equal(seq.checkType(data.rnaSequence), 'rna', "should return strings 'rna' for sequence following IUPAC guidelines.")
-  t.equal(seq.checkType(data.ambiguousDnaSequence), 'ambiguousDna', "should return strings 'ambiguousDna' for ambiguous DNA sequence.")
-  t.equal(seq.checkType(data.ambiguousRnaSequence), 'ambiguousRna', "should return strings 'ambiguousRna' for ambiguous RNA sequence.")
+  t.equal(seq.checkType(data.dnaSequence), 'dna', "should return strings 'dna' for sequence following DNA sequences.")
+  t.equal(seq.checkType(data.rnaSequence), 'rna', "should return strings 'rna' for sequence following RNA sequences.")
+  t.equal(seq.checkType(data.ambiguousDnaSequence), 'dna', "should return strings 'dna' for ambiguous DNA sequence (if within 0.9 threshold).")
+  t.equal(seq.checkType(data.junkSequence), 'undefined', "should return strings 'undefined' for JUNK sequence.")
   t.equal(seq.checkType(data.exon1Protein), 'protein', "should return strings 'protein' for protein sequence")
 })
 
