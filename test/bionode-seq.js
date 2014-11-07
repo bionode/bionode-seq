@@ -7,7 +7,7 @@ test("check sequence type", function(t) {
   t.equal(seq.checkType(data.dnaSequence), 'dna', "should return strings 'dna' for sequence following DNA sequences.")
   t.equal(seq.checkType(data.rnaSequence), 'rna', "should return strings 'rna' for sequence following RNA sequences.")
   t.equal(seq.checkType(data.ambiguousDnaSequence), 'dna', "should return strings 'dna' for ambiguous DNA sequence (if within 0.9 threshold).")
-  t.equal(seq.checkType(data.junkSequence), 'undefined', "should return strings 'undefined' for JUNK sequence.")
+  t.equal(seq.checkType(data.junkSequence), undefined, "should return strings 'undefined' for JUNK sequence.")
   t.equal(seq.checkType(data.exon1Protein), 'protein', "should return strings 'protein' for protein sequence")
 })
 
