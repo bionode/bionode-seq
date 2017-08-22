@@ -19,7 +19,7 @@ const commands = {
   'check-type': {
     'func': seq.checkType,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': [
       'threshold',
@@ -30,21 +30,21 @@ const commands = {
   'reverse': {
     'func': seq.reverse,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'revese-comp': {
     'func': seq.reverseComplement,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'remove-introns': {
     'func': seq.removeIntrons,
     'requiredParams': [
-      'seq',
+      'sequence',
       'exonsRanges'
     ],
     'optionalParams': []
@@ -52,7 +52,7 @@ const commands = {
   'transcribe': {
     'func': seq.transcribe,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': [
       'exonsRanges'
@@ -61,7 +61,7 @@ const commands = {
   'translate': {
     'func': seq.translate,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': [
       'exonsRanges'
@@ -78,7 +78,7 @@ const commands = {
   'non-canonical-splices': {
     'func': seq.findNonCanonicalSplices,
     'requiredParams': [
-      'seq',
+      'sequence',
       'exonsRanges'
     ],
     'optionalParams': []
@@ -86,35 +86,35 @@ const commands = {
   'check-canonical-start': {
     'func': seq.checkCanonicalTranslationStartSite,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'get-reading-frames': {
     'func': seq.getReadingFrames,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'get-open-reading-frames': {
     'func': seq.getOpenReadingFrames,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'get-all-open-reading-frames': {
     'func': seq.getAllOpenReadingFrames,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': []
   },
   'find-longest-open-reading-frame': {
     'func': seq.findLongestOpenReadingFrame,
     'requiredParams': [
-      'seq'
+      'sequence'
     ],
     'optionalParams': [
       'frameSymbol'
@@ -138,7 +138,7 @@ const usage = function () {
         'To view help for a specific command: bionode-seq <command>\n\n' +
         'Commands:'
   )
-  for (let command in commands) {
+  for (const command in commands) {
     console.log('\t' + command)
   }
   options()
@@ -148,14 +148,14 @@ const usage = function () {
 const commandUsage = function (command) {
   console.log(
         'Usage: bionode-seq ' + command + ' <options>\n\n' +
-        'Required parameters supplied in JSON format:'
+        'Required parameters supplied in ndJSON format:'
   )
-  let requiredParams = commands[command].requiredParams
+  const requiredParams = commands[command].requiredParams
   for (const i in requiredParams) {
     console.log('\t' + requiredParams[i])
   }
-  console.log('\nOptional parameters supplied in JSON format:')
-  let optionalParams = commands[command].optionalParams
+  console.log('\nOptional parameters supplied in ndJSON format:')
+  const optionalParams = commands[command].optionalParams
   if (optionalParams.length === 0) {
     console.log('\tNone')
   } else {
@@ -166,6 +166,47 @@ const commandUsage = function (command) {
   options()
   console.log('Check bionode-seq/lib/bionode-seq.js for specific formats for paramters.')
   process.exit(0)
+}
+
+const RequiredParamException = function (command, param) {
+  this.message = 'The paramter: "' + param + '" was not provided and is required for ' + command
+}
+
+const runSeqFunction = function (command, params) {
+  // check if the required parameters are satisfied for this command
+  const requiredParams = commands[command].requiredParams
+  for (const i in requiredParams) {
+    if (!params.hasOwnProperty(requiredParams[i])) {
+      throw new RequiredParamException(command, requiredParams[i])
+    }
+  }
+
+  const optionalParams = commands[command].optionalParams
+
+  let result
+
+  // call the function!
+  const seqFunc = commands[command].func
+  if (requiredParams.length === 1 && optionalParams.length === 0) {
+    // only one required parameter, no optional
+    result = seqFunc(params[requiredParams[0]])
+  } else if (requiredParams.length === 1 && optionalParams.length === 1) {
+    // only one required parameter, one optional parameter
+    result = seqFunc(params[requiredParams[0]], params[optionalParams[0]])
+  } else if (requiredParams.length === 2 && optionalParams.length === 0) {
+    // two required parameters, no optional
+    result = seqFunc(params[requiredParams[0]], params[requiredParams[1]])
+  } else if (requiredParams.length === 1 && optionalParams.length === 3) {
+    // one required parameter, 3 optional parameters
+    result = seqFunc(
+        params[requiredParams[0]],
+        params[optionalParams[0]],
+        params[optionalParams[1]],
+        params[optionalParams[2]]
+      )
+  }
+
+  return result
 }
 
 // display general usage message
@@ -182,7 +223,7 @@ if (!commands.hasOwnProperty(command)) {
 }
 
 // display specific command usage message
-if (argv._.length === 1) {
+if (argv._.length === 1 && !argv.input) {
   commandUsage(command)
 }
 
@@ -195,8 +236,7 @@ const serialize = ndjson.serialize()
 fs.createReadStream(argv.input)
     .pipe(ndjson.parse())
     .pipe(through.obj(function (data, enc, cb) {
-      console.log('chunk', data)
-      this.push(commands[command].func(data.seq))
+      this.push(runSeqFunction(command, data))
 
       // get next object in stream
       cb()
