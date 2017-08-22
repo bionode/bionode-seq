@@ -26,7 +26,7 @@
 <p>Module for DNA, RNA and protein sequences manipulation.</p>
 <p>doi: <a href="?">?</a>
 author: <a href="http://bmpvieira.com">Bruno Vieira</a>
-email: <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#x3a;&#x6d;&#97;&#x69;&#x6c;&#x40;&#x62;&#x6d;&#x70;&#118;&#x69;&#101;&#x69;&#114;&#x61;&#x2e;&#99;&#111;&#x6d;">&#x6d;&#97;&#x69;&#x6c;&#x40;&#x62;&#x6d;&#x70;&#118;&#x69;&#101;&#x69;&#114;&#x61;&#x2e;&#99;&#111;&#x6d;</a>
+email: <a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#109;&#97;&#x69;&#x6c;&#64;&#98;&#109;&#x70;&#x76;&#x69;&#101;&#105;&#114;&#x61;&#46;&#99;&#x6f;&#x6d;">&#109;&#97;&#x69;&#x6c;&#64;&#98;&#109;&#x70;&#x76;&#x69;&#101;&#105;&#114;&#x61;&#46;&#99;&#x6f;&#x6d;</a>
 license: <a href="https://raw.githubusercontent.com/bionode/bionode-seq/master/LICENSE">MIT</a></p>
 </blockquote>
 <hr>
@@ -50,7 +50,7 @@ license: <a href="https://raw.githubusercontent.com/bionode/bionode-seq/master/L
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-keyword">var</span> seq = <span class="hljs-built_in">module</span>.exports
 
-<span class="hljs-keyword">var</span> _baseMatrix = { A: <span class="hljs-string">'T'</span>, C: <span class="hljs-string">'G'</span>, W: <span class="hljs-string">'S'</span>, M: <span class="hljs-string">'K'</span>, R: <span class="hljs-string">'Y'</span>, B: <span class="hljs-string">'V'</span>, D: <span class="hljs-string">'H'</span> }
+<span class="hljs-keyword">var</span> _baseMatrix = { <span class="hljs-attr">A</span>: <span class="hljs-string">'T'</span>, <span class="hljs-attr">C</span>: <span class="hljs-string">'G'</span>, <span class="hljs-attr">W</span>: <span class="hljs-string">'S'</span>, <span class="hljs-attr">M</span>: <span class="hljs-string">'K'</span>, <span class="hljs-attr">R</span>: <span class="hljs-string">'Y'</span>, <span class="hljs-attr">B</span>: <span class="hljs-string">'V'</span>, <span class="hljs-attr">D</span>: <span class="hljs-string">'H'</span> }
 
 <span class="hljs-keyword">var</span> _dnaComplementBasesMatrix = <span class="hljs-built_in">Object</span>.create(_baseMatrix)
 <span class="hljs-keyword">var</span> _rnaComplementBasesMatrix = <span class="hljs-built_in">Object</span>.create(_baseMatrix)
@@ -102,8 +102,8 @@ mirrorAndLowerCaseMatrices([
 _transcribeBasesMatrix[<span class="hljs-string">'T'</span>] = <span class="hljs-string">'A'</span>
 _transcribeBasesMatrix[<span class="hljs-string">'t'</span>] = <span class="hljs-string">'a'</span>
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mirrorAndLowerCaseMatrices</span><span class="hljs-params">(matricesArray)</span> </span>{
-  matricesArray.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(matrix)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mirrorAndLowerCaseMatrices</span>(<span class="hljs-params">matricesArray</span>) </span>{
+  matricesArray.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">matrix</span>) </span>{
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k <span class="hljs-keyword">in</span> matrix) {
       <span class="hljs-keyword">var</span> v = matrix[k]
       matrix[k.toLowerCase()] = v.toLowerCase()
@@ -135,37 +135,61 @@ _transcribeBasesMatrix[<span class="hljs-string">'t'</span>] = <span class="hljs
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Takes a sequence string and checks if it’s DNA, RNA or protein. Follows <a href="http://en.wikipedia.org/wiki/Nucleic_acid_notation#IUPAC_notation">IUPAC notation</a> which allows ambiguous sequence notation. In this case the sequence is labelled as ambiguous nucleotide rather than amino acid sequence.</p>
+              <p>Takes a sequence string and checks if it’s DNA, RNA or protein (returns ‘dna’, ‘rna’, ‘protein’ or undefined). Other optional arguments include threshold, length and index (see below).</p>
 <pre><code>seq.checkType(<span class="hljs-string">"ATGACCCTGAGAAGAGCACCG"</span>);
 =&gt; <span class="hljs-string">"dna"</span>
 seq.checkType(<span class="hljs-string">"AUGACCCUGAAGGUGAAUGAA"</span>);
 =&gt; <span class="hljs-string">"rna"</span>
 seq.checkType(<span class="hljs-string">"MAYKSGKRPTFFEVFKAHCSDS"</span>);
 =&gt; <span class="hljs-string">"protein"</span>
-seq.checkType(<span class="hljs-string">"AMTGACCCTGAGAAGAGCACCG"</span>);
-=&gt; <span class="hljs-string">"ambiguousDna"</span>
-seq.checkType(<span class="hljs-string">"AMUGACCCUGAAGGUGAAUGAA"</span>);
-=&gt; <span class="hljs-string">"ambiguousRna"</span>
+seq.checkType(<span class="hljs-string">"1234567891234567ATGACC"</span>);
+=&gt; <span class="hljs-literal">undefined</span>
+</code></pre><p>By default, the method has a 90% threshold, however, this can be altered as required.</p>
+<pre><code>seq.checkType(<span class="hljs-string">"1234567891234567ATGACC"</span>, <span class="hljs-number">0.8</span>);
+=&gt; <span class="hljs-literal">undefined</span>
+seq.checkType(<span class="hljs-string">"--------MAYKSGKRPTFFEV"</span>, <span class="hljs-number">0.7</span>);
+=&gt; <span class="hljs-string">"protein"</span>
+</code></pre><p>The length value specifies the length of the sequence to be analyse (default 10000). If your sequence is extremely long, you may want to analyse a shorter sub-section to reduce the computational burden.</p>
+<pre><code>seq.checkType(<span class="hljs-string">'A Very Long Sequence'</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">1000</span>);
+=&gt; Type based on the first <span class="hljs-number">1000</span> characters
+</code></pre><p>The index value specifies the point on the sequence from which the sequence is to be analysed. Perhaps you know that there are lot of gaps at the start of the sequence.</p>
+<pre><code>seq.checkType(<span class="hljs-string">"--------MAYKSGKRPTFFEV"</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">10000</span>, <span class="hljs-number">8</span>);
+=&gt; <span class="hljs-string">"protein"</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.checkType = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
-  <span class="hljs-keyword">var</span> acgMatch = sequence.match(<span class="hljs-regexp">/[ACG]/i</span>);
-  <span class="hljs-keyword">var</span> tMatch = sequence.match(<span class="hljs-regexp">/[T]/i</span>);
-  <span class="hljs-keyword">var</span> nMatch = sequence.match(<span class="hljs-regexp">/[N]/i</span>);
-  <span class="hljs-keyword">var</span> uMatch = sequence.match(<span class="hljs-regexp">/[U]/i</span>);
-  <span class="hljs-keyword">var</span> potentialNucleotideMatch = sequence.match(<span class="hljs-regexp">/[WSMKRYBDHV]/i</span>);
-  <span class="hljs-keyword">var</span> proteinMatch = sequence.match(<span class="hljs-regexp">/[EFIJLOPQZX\*]/i</span>);
-  <span class="hljs-keyword">if</span> (proteinMatch) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">"protein"</span>;
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (acgMatch &amp;&amp; !potentialNucleotideMatch &amp;&amp; !uMatch) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">"dna"</span>;
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (acgMatch &amp;&amp; potentialNucleotideMatch &amp;&amp; !uMatch) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">"ambiguousDna"</span>;
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (acgMatch &amp;&amp; !potentialNucleotideMatch &amp;&amp; uMatch &amp;&amp; !tMatch) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">"rna"</span>;
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (acgMatch &amp;&amp; potentialNucleotideMatch &amp;&amp; uMatch &amp;&amp; !tMatch) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">"ambiguousRna"</span>;
+            <div class="content"><div class='highlight'><pre>seq.checkType = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">sequence, threshold, length, index</span>) </span>{
+  <span class="hljs-keyword">if</span> (threshold === <span class="hljs-literal">undefined</span>) {
+    threshold = <span class="hljs-number">0.9</span>
+  }
+  <span class="hljs-keyword">if</span> (length === <span class="hljs-literal">undefined</span>) {
+    length = <span class="hljs-number">10000</span>
+  }
+  <span class="hljs-keyword">if</span> (index === <span class="hljs-literal">undefined</span>) {
+    index = <span class="hljs-number">1</span>
+  }
+  <span class="hljs-keyword">var</span> seq = sequence.slice(index - <span class="hljs-number">1</span>, length)
+
+  <span class="hljs-keyword">var</span> dnaSeq = seq.replace(<span class="hljs-regexp">/N/gi</span>,<span class="hljs-string">''</span>)
+  <span class="hljs-keyword">var</span> dnaTotal = dnaSeq.length
+  <span class="hljs-keyword">var</span> acgMatch = ((dnaSeq.match(<span class="hljs-regexp">/[ACG]/gi</span>) || []).length) / dnaTotal
+  <span class="hljs-keyword">var</span> tMatch = ((dnaSeq.match(<span class="hljs-regexp">/[T]/gi</span>) || []).length) / dnaTotal
+  <span class="hljs-keyword">var</span> uMatch = ((dnaSeq.match(<span class="hljs-regexp">/[U]/gi</span>) || []).length) / dnaTotal
+  
+  <span class="hljs-keyword">var</span> proteinSeq = seq.replace(<span class="hljs-regexp">/X/gi</span>,<span class="hljs-string">''</span>)
+  <span class="hljs-keyword">var</span> proteinTotal = proteinSeq.length
+  <span class="hljs-keyword">var</span> proteinMatch = ((seq.match(<span class="hljs-regexp">/[ARNDCQEGHILKMFPSTWYV\*]/gi</span>) || []).length) / proteinTotal
+
+  <span class="hljs-keyword">if</span> (((acgMatch + tMatch) &gt;= threshold) || ((acgMatch + uMatch) &gt;= threshold)) {
+    <span class="hljs-keyword">if</span> (tMatch &gt;= uMatch) {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'dna'</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (uMatch &gt;= tMatch) {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'rna'</span>
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'dna'</span>
+    }
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (proteinMatch &gt;= threshold) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'protein'</span>
   }
 }</pre></div></div>
             
@@ -182,9 +206,9 @@ seq.checkType(<span class="hljs-string">"AMUGACCCUGAAGGUGAAUGAA"</span>);
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.createComplementBase = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequenceType)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.createComplementBase = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequenceType</span>) </span>{
   <span class="hljs-keyword">var</span> complementBasesMatrix = (sequenceType === <span class="hljs-string">'rna'</span> || sequenceType === <span class="hljs-string">'ambiguousRna'</span>) ? _rnaComplementBasesMatrix : _dnaComplementBasesMatrix
-  <span class="hljs-keyword">var</span> getComplementBase = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(base)</span> </span>{
+  <span class="hljs-keyword">var</span> getComplementBase = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">base</span>) </span>{
     <span class="hljs-keyword">var</span> complement = complementBasesMatrix[base]
     <span class="hljs-keyword">return</span> complement || base
   }
@@ -219,7 +243,7 @@ seq.checkType(<span class="hljs-string">"AMUGACCCUGAAGGUGAAUGAA"</span>);
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.reverse = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.reverse = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">return</span> sequence.split(<span class="hljs-string">''</span>).reverse().join(<span class="hljs-string">''</span>)
 }</pre></div></div>
             
@@ -256,7 +280,7 @@ seq.reverseComplement(<span class="hljs-string">"ATGACCCTGAAGGTGAA"</span>);
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.complement = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, reverse)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.complement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, reverse</span>) </span>{
   <span class="hljs-keyword">var</span> reverse = reverse || <span class="hljs-literal">false</span>
   <span class="hljs-keyword">var</span> sequenceType = seq.checkType(sequence)
   <span class="hljs-keyword">var</span> getComplementBase = seq.createComplementBase(sequenceType)
@@ -281,7 +305,7 @@ seq.reverseComplement(<span class="hljs-string">"ATGACCCTGAAGGTGAA"</span>);
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.reverseComplement = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.reverseComplement = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">return</span> seq.complement(sequence, <span class="hljs-literal">true</span>)
 }</pre></div></div>
             
@@ -319,7 +343,7 @@ seq.getTranscribedBase(<span class="hljs-string">"C"</span>);
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.getTranscribedBase = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(base)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.getTranscribedBase = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">base</span>) </span>{
   <span class="hljs-keyword">return</span> _transcribeBasesMatrix[base] || base
 }</pre></div></div>
             
@@ -355,7 +379,7 @@ seq.getTranslatedAA(<span class="hljs-string">"CUU"</span>);
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.getTranslatedAA = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(codon)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.getTranslatedAA = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">codon</span>) </span>{
   <span class="hljs-keyword">return</span> _translateCodonsMatrix[codon]
 }</pre></div></div>
             
@@ -389,10 +413,10 @@ seq.removeIntrons(<span class="hljs-string">"ATGACCCTGAAGGTGAATGACAG"</span>, [[
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.removeIntrons = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, exonsRanges)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.removeIntrons = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, exonsRanges</span>) </span>{
   <span class="hljs-keyword">var</span> sequenceWithoutIntrons = <span class="hljs-string">''</span>
-  <span class="hljs-keyword">var</span> exonsRangesSorted = exonsRanges.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a, b)</span> </span>{ <span class="hljs-keyword">return</span> a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>] })
-  exonsRangesSorted.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(exonRange)</span> </span>{
+  <span class="hljs-keyword">var</span> exonsRangesSorted = exonsRanges.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b</span>) </span>{ <span class="hljs-keyword">return</span> a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>] })
+  exonsRangesSorted.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exonRange</span>) </span>{
     sequenceWithoutIntrons += sequence.substring(exonRange[<span class="hljs-number">0</span>], exonRange[<span class="hljs-number">1</span>])
   })
   <span class="hljs-keyword">return</span> sequenceWithoutIntrons
@@ -429,7 +453,7 @@ seq.transcribe(<span class="hljs-string">"AUGACCCUGAAGGUGAA"</span>); <span clas
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.transcribe = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, exonsRanges)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.transcribe = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, exonsRanges</span>) </span>{
   <span class="hljs-keyword">if</span> (exonsRanges) {
     <span class="hljs-keyword">var</span> sequenceWithoutIntrons = seq.removeIntrons(sequence, exonsRanges)
     sequence = sequenceWithoutIntrons
@@ -476,7 +500,7 @@ seq.translate(<span class="hljs-string">"ATGACCCTGAAGGTGAATGACAGGAAGCC"</span>, 
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.translate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, exonsRanges)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.translate = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, exonsRanges</span>) </span>{
   <span class="hljs-keyword">if</span> (exonsRanges) {
     <span class="hljs-keyword">var</span> sequenceWithoutIntrons = seq.removeIntrons(sequence, exonsRanges)
     sequence = sequenceWithoutIntrons
@@ -527,9 +551,9 @@ seq.reverseExons([[<span class="hljs-number">10</span>,<span class="hljs-number"
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.reverseExons = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(exonsRanges, referenceLength)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.reverseExons = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exonsRanges, referenceLength</span>) </span>{
   <span class="hljs-keyword">var</span> reversedExonsRanges = []
-  exonsRanges.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(exonRange)</span> </span>{
+  exonsRanges.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">exonRange</span>) </span>{
     <span class="hljs-keyword">var</span> start = referenceLength - exonRange[<span class="hljs-number">1</span>]
     <span class="hljs-keyword">var</span> stop = referenceLength - exonRange[<span class="hljs-number">0</span>]
     reversedExonsRanges.push([start, stop])
@@ -567,11 +591,11 @@ seq.findNonCanonicalSplices(<span class="hljs-string">"GGCGGCGGCGGTGAGGTGAGCCTGC
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.findNonCanonicalSplices = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, exonsRanges)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.findNonCanonicalSplices = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, exonsRanges</span>) </span>{
   <span class="hljs-keyword">var</span> nonCanonicalSplices = []
-  <span class="hljs-keyword">var</span> exonsRangesSorted = exonsRanges.sort(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(a, b)</span> </span>{ <span class="hljs-keyword">return</span> a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>] })
+  <span class="hljs-keyword">var</span> exonsRangesSorted = exonsRanges.sort(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b</span>) </span>{ <span class="hljs-keyword">return</span> a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>] })
   exonsRangesSorted.forEach(checkNonCanonicalIntron)
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkNonCanonicalIntron</span><span class="hljs-params">(exonRange, i)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkNonCanonicalIntron</span>(<span class="hljs-params">exonRange, i</span>) </span>{
     <span class="hljs-keyword">var</span> donor = exonRange
     <span class="hljs-keyword">var</span> acceptor = exonsRangesSorted[i + <span class="hljs-number">1</span>]
     <span class="hljs-keyword">if</span> (!acceptor) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
@@ -616,7 +640,7 @@ seq.checkCanonicalTranslationStartSite(<span class="hljs-string">"AATGACCCTGAAGG
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.checkCanonicalTranslationStartSite = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.checkCanonicalTranslationStartSite = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">return</span> sequence.substring(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>).toLowerCase().replace(<span class="hljs-string">'t'</span>, <span class="hljs-string">'u'</span>) === <span class="hljs-string">'aug'</span>
 }</pre></div></div>
             
@@ -653,7 +677,7 @@ seq.checkCanonicalTranslationStartSite(<span class="hljs-string">"AATGACCCTGAAGG
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.getReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.getReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">var</span> reverse = seq.reverseComplement(sequence)
   <span class="hljs-keyword">return</span> [sequence, sequence.substring(<span class="hljs-number">1</span>), sequence.substring(<span class="hljs-number">2</span>), reverse, reverse.substring(<span class="hljs-number">1</span>), reverse.substring(<span class="hljs-number">2</span>)]
 }</pre></div></div>
@@ -690,7 +714,7 @@ seq.getOpenReadingFrames(<span class="hljs-string">"ATGAGAAGCCCAACATGAGGACTGA"</
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.getOpenReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.getOpenReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">var</span> sequenceType = seq.checkType(sequence)
   <span class="hljs-keyword">var</span> stopCodons
   <span class="hljs-keyword">if</span> (sequenceType === <span class="hljs-string">'dna'</span> || sequenceType === <span class="hljs-string">'ambiguousDna'</span>) {
@@ -701,9 +725,9 @@ seq.getOpenReadingFrames(<span class="hljs-string">"ATGAGAAGCCCAACATGAGGACTGA"</
   }
   <span class="hljs-keyword">var</span> openReadingFrames = []
   <span class="hljs-keyword">var</span> openReadingFrame = <span class="hljs-string">''</span>
-  sequence.match(<span class="hljs-regexp">/.{1,3}/g</span>).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(codon)</span> </span>{
+  sequence.match(<span class="hljs-regexp">/.{1,3}/g</span>).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">codon</span>) </span>{
     openReadingFrame += codon
-    <span class="hljs-keyword">if</span> (stopCodons.indexOf(codon) !== -<span class="hljs-number">1</span> &amp;&amp; openReadingFrame.length &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">if</span> (stopCodons.indexOf(codon) !== <span class="hljs-number">-1</span> &amp;&amp; openReadingFrame.length &gt; <span class="hljs-number">0</span>) {
       openReadingFrames.push(openReadingFrame)
       openReadingFrame = <span class="hljs-string">''</span>
     }
@@ -745,7 +769,7 @@ seq.getOpenReadingFrames(<span class="hljs-string">"ATGAGAAGCCCAACATGAGGACTGA"</
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.getAllOpenReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.getAllOpenReadingFrames = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence</span>) </span>{
   <span class="hljs-keyword">var</span> readingFrames = seq.getReadingFrames(sequence)
   <span class="hljs-keyword">var</span> allOpenReadingFrames = readingFrames.map(seq.getOpenReadingFrames)
   <span class="hljs-keyword">return</span> allOpenReadingFrames
@@ -785,7 +809,7 @@ seq.findLongestOpenReadingFrame(<span class="hljs-string">"ATGACCCTGAAGGTGAATGAC
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>seq.findLongestOpenReadingFrame = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(sequence, frameSymbol)</span> </span>{
+            <div class="content"><div class='highlight'><pre>seq.findLongestOpenReadingFrame = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">sequence, frameSymbol</span>) </span>{
   <span class="hljs-keyword">var</span> frameSymbols = [<span class="hljs-string">'+1'</span>, <span class="hljs-string">'+2'</span>, <span class="hljs-string">'+3'</span>, <span class="hljs-string">'-1'</span>, <span class="hljs-string">'-2'</span>, <span class="hljs-string">'-3'</span>]
   <span class="hljs-keyword">if</span> (frameSymbol) {
     <span class="hljs-keyword">var</span> framePosition = frameSymbols.indexOf(frameSymbol)
@@ -843,7 +867,7 @@ seq.findLongestOpenReadingFrame(<span class="hljs-string">"ATGACCCTGAAGGTGAATGAC
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sortReadingFrames</span><span class="hljs-params">(a, b)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sortReadingFrames</span>(<span class="hljs-params">a, b</span>) </span>{
     <span class="hljs-keyword">var</span> aSort = a.length
     <span class="hljs-keyword">var</span> bSort = b.length
     <span class="hljs-keyword">if</span> (bSort - aSort === <span class="hljs-number">0</span>) {
@@ -868,7 +892,7 @@ seq.findLongestOpenReadingFrame(<span class="hljs-string">"ATGACCCTGAAGGTGAATGAC
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLongestOpenReadingFrame</span><span class="hljs-params">(array)</span> </span>{
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLongestOpenReadingFrame</span>(<span class="hljs-params">array</span>) </span>{
     <span class="hljs-keyword">return</span> array.sort(sortReadingFrames)[<span class="hljs-number">0</span>]
   }
 
