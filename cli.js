@@ -63,16 +63,24 @@ if (!commands.hasOwnProperty(command)) {
 // if there is an output file present, write to the file. Otherwise write to stdout
 const output = argv.output ? fs.createWriteStream(argv.output) : process.stdout
 
+const serialize = ndjson.serialize()
+
 // stream the input file into the seq parser
 fs.createReadStream(argv.input)
     .pipe(ndjson.parse())
     .pipe(through.obj(function (data, enc, cb) {
       console.log('chunk', data)
+      this.push(commands[command](data.seq))
 
       // get next object in stream
       cb()
     }))
+    .pipe(serialize)
     .pipe(output)
     .on('error', function (err) {
       console.log('There was an error:\n', err)
+    })
+    .on('end', function () {
+      serialize.end()
+      output.close()
     })
