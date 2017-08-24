@@ -12,7 +12,11 @@
     "email": "mail@bmpvieira.com"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "ndjson": "^1.5.0",
+    "through2": "^2.0.3"
+  },
   "devDependencies": {
     "browserify": "^5.11.0",
     "contributor": "^0.1.16",
@@ -35,6 +39,9 @@
     "browser"
   ],
   "main": "index.js",
+  "bin": {
+    "bionode-seq": "cli.js"
+  },
   "scripts": {
     "test": "node test/bionode-seq.js | tap-spec",
     "test-browser": "browserify test/bionode-seq.js | testling | tap-spec",
